@@ -1,17 +1,61 @@
-# React + Vite
+# 🎬 Movie App (React)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple movie search application built with React.  
+The app allows users to search for movies, view results as cards, and manage favorites using Context API.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Features Built
 
-## React Compiler
+### 🔍 Movie Search
+ Users can search for movies using a search bar
+ Controlled input using React `useState`
+ Search query is passed to parent component
+ Prevents page refresh on submit
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 🎞️ Movie Display
+- Movies are displayed in card format
+- Each card shows movie details (title, poster, etc.)
+- Grid layout for better UI presentation
 
-## Expanding the ESLint configuration
+### ❤️ Favorites System
+- Add movies to favorites
+- Remove movies from favorites
+- Uses Context API for global state management
+- Prevents duplicate favorites
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-# MOVIE-APP
+### 🌐 Context API
+- Centralized state management
+- Shared between components (Search, MovieCard, etc.)
+- Avoids prop drilling
+
+### 🎨 UI Structure
+- Basic Netflix-style layout idea
+- Component-based structure for scalability
+
+---
+
+## 🧠 Tech Stack
+
+- React (Vite)
+- JavaScript (ES6+)
+- Context API
+- CSS
+- TMDB API (movie data source)
+
+---
+
+## 🐛 Known Issue
+
+### Search Function Not Working Properly
+The search feature is currently experiencing issues.
+
+Possible causes:
+- Search query not being correctly passed to API function
+- Missing or incorrect API request handling
+- State not updating before fetch request runs
+- Parent component not receiving `onSearch` data correctly
+
+---
+
+## 📁 Project Structure
