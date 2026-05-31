@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { searchMovies } from "../services/api";
+import { saveSearch } from "../services/appwrite";
 
 export default function SearchBar({ onSearch }) {
   const [query, setQuery] = useState("");
@@ -27,21 +28,35 @@ export default function SearchBar({ onSearch }) {
 
     return () => clearTimeout(delay);
   }, [query]);
+// 🔥 HANDLE SELECTED SUGGESTION
+  const handleSelect = async (movie) => {
 
-  // 🔍 when user clicks result
-  const handleSelect = (movie) => {
-    setQuery(movie.title);
-    setResults([]);
-    setShowDropdown(false);
-    onSearch(movie.title);
-  };
+  await saveSearch(movie); // uses ENV config internally
 
-  // ⌨️ manual submit
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!query.trim()) return;
-    onSearch(query);
-  };
+  setQuery(movie.title);
+  setResults([]);
+  setShowDropdown(false);
+
+  onSearch(movie.title);
+};
+
+  // Called when Search button is pressed
+const handleSubmit = (e) => {
+  // Prevent page refresh
+  e.preventDefault();
+
+  // Prevent empty searches
+  if (!query.trim()) return;
+
+  // Send search query to Home.jsx
+  onSearch(query);
+
+  // Hide suggestions dropdown
+  setShowDropdown(false);
+
+  // Optional: Clear suggestions array
+  setResults([]);
+};
 
   return (
     <div className="relative w-full max-w-xl mx-auto">

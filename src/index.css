@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+
+.pattern {
+  @apply absolute top-0 left-0 w-full h-full bg-cover bg-center opacity-20;
+  background-image: url("../assets/bg.png");
+}
+
+.text-gradient {
+    @apply bg-gradient-to-r from-[#D6c7ff] to-[#feb47b] text-transparent bg-clip-text;
+}
