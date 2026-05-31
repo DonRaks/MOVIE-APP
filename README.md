@@ -161,4 +161,4 @@ Add:
 Smooth carousel animation
 “Most searched today” logic
 Click → movie details page
-Improve UI polish (Netflix-style finish)
+Improve UI polish
