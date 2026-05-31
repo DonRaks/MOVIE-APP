@@ -6,35 +6,20 @@ import SearchBar from "../components/SearchBar";
 
 export default function Home() {
 
-  // =========================
-  // NORMAL MOVIES (GRID)
-  // =========================
   const [movies, setMovies] = useState([]);
-
-  // =========================
-  // TRENDING SEARCHES (SLIDER)
-  // =========================
   const [trending, setTrending] = useState([]);
-
   const [query, setQuery] = useState("");
 
-  // Load BOTH on page start
   useEffect(() => {
     loadMovies();
     loadTrending();
   }, []);
 
-  // =========================
-  // NORMAL MOVIES FROM API
-  // =========================
   const loadMovies = async () => {
     const data = await getTrendingMovies();
     setMovies(data.results || []);
   };
 
-  // =========================
-  // TRENDING FROM APPWRITE
-  // =========================
   const loadTrending = async () => {
     const data = await getTrendingSearches();
 
@@ -49,9 +34,6 @@ export default function Home() {
     setTrending(formatted);
   };
 
-  // =========================
-  // SEARCH
-  // =========================
   const handleSearch = async (searchQuery) => {
 
     if (!searchQuery.trim()) {
@@ -64,52 +46,89 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-black min-h-screen text-white">
+  // =========================
+  // GLOBAL WRAPPER (MOBILE SAFE)
+  // =========================
+  <div className="bg-black min-h-screen text-white overflow-x-hidden w-full">
 
-      {/* HERO + SEARCH */}
+    {/* =========================
+        SEARCH (RESPONSIVE WRAPPER)
+    ========================== */}
+    <div className="w-full px-2 sm:px-4 md:px-8 lg:px-12 py-3">
       <SearchBar onSearch={handleSearch} />
-
-      {/* =========================
-          🔥 TRENDING SLIDER
-      ========================== */}
-      <h2 className="text-xl font-bold px-4 mt-6">
-        🔥 Trending Searches
-      </h2>
-
-      <div className="flex gap-4 overflow-x-auto px-4 py-3 scrollbar-hide">
-
-        {trending.map((movie) => (
-          <div key={movie.id} className="min-w-[120px]">
-
-            <img
-              src={movie.poster_path}
-              className="w-[120px] h-[180px] object-cover rounded"
-            />
-
-            <p className="text-xs mt-1">
-              {movie.title}
-            </p>
-
-          </div>
-        ))}
-
-      </div>
-
-      {/* =========================
-          🎬 NORMAL MOVIES GRID
-      ========================== */}
-      <h2 className="text-xl font-bold px-4 mt-6">
-        🎬 Movies
-      </h2>
-
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4">
-
-        {movies.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
-        ))}
-
-      </div>
-
     </div>
-  );
+
+    {/* =========================
+        🔥 TRENDING SECTION
+    ========================== */}
+    <h2 className="text-base sm:text-lg md:text-xl font-bold px-3 sm:px-4 mt-4">
+      🔥 Trending Searches
+    </h2>
+
+    <div
+      className="
+        flex
+        gap-2 sm:gap-3 md:gap-4
+        overflow-x-auto
+        px-3 sm:px-4
+        py-3
+        scrollbar-hide
+        scroll-smooth
+      "
+    >
+      {trending.map((movie) => (
+        <div
+          key={movie.id}
+          className="
+            flex-shrink-0
+            w-[90px]
+            sm:w-[110px]
+            md:w-[130px]
+          "
+        >
+          <img
+            src={movie.poster_path}
+            className="
+              w-full
+              h-[130px]
+              sm:h-[160px]
+              md:h-[190px]
+              object-cover
+              rounded
+            "
+          />
+
+          <p className="text-[10px] sm:text-xs mt-1 truncate">
+            {movie.title}
+          </p>
+        </div>
+      ))}
+    </div>
+
+    {/* =========================
+        🎬 MOVIES GRID (FULL RESPONSIVE)
+    ========================== */}
+    <h2 className="text-base sm:text-lg md:text-xl font-bold px-3 sm:px-4 mt-5">
+      🎬 Movies
+    </h2>
+
+    <div
+      className="
+        grid
+        grid-cols-2
+        sm:grid-cols-3
+        md:grid-cols-4
+        lg:grid-cols-5
+        gap-2 sm:gap-3 md:gap-4
+        px-2 sm:px-4 md:px-6 lg:px-10
+        py-3
+      "
+    >
+      {movies.map((movie) => (
+        <MovieCard key={movie.id} movie={movie} />
+      ))}
+    </div>
+
+  </div>
+);
 }
