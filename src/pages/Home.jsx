@@ -1,105 +1,115 @@
-// Import React hooks
 import { useEffect, useState } from "react";
-
-// Import API functions
 import { getTrendingMovies, searchMovies } from "../services/api";
-
-// Import components
+import { getTrendingSearches } from "../services/appwrite";
 import MovieCard from "../components/MovieCard";
 import SearchBar from "../components/SearchBar";
 
 export default function Home() {
+
+  // =========================
+  // NORMAL MOVIES (GRID)
+  // =========================
   const [movies, setMovies] = useState([]);
-  const [hero, setHero] = useState(null);
+
+  // =========================
+  // TRENDING SEARCHES (SLIDER)
+  // =========================
+  const [trending, setTrending] = useState([]);
+
   const [query, setQuery] = useState("");
 
+  // Load BOTH on page start
   useEffect(() => {
+    loadMovies();
     loadTrending();
   }, []);
 
-  // ===============================
-// LOAD TRENDING (FIXED)
-// ===============================
-const loadTrending = async () => {
-  const data = await getTrendingSearches();
+  // =========================
+  // NORMAL MOVIES FROM API
+  // =========================
+  const loadMovies = async () => {
+    const data = await getTrendingMovies();
+    setMovies(data.results || []);
+  };
 
-  const formatted = data.map((item) => ({
-    id: item.movieId,
-    title: item.title,
+  // =========================
+  // TRENDING FROM APPWRITE
+  // =========================
+  const loadTrending = async () => {
+    const data = await getTrendingSearches();
 
-    // 🔥 MUST convert poster path
-    poster_path: item.posterPath
-      ? `https://image.tmdb.org/t/p/w500${item.posterPath}`
-      : null
-  }));
+    const formatted = data.map((item) => ({
+      id: item.movieId,
+      title: item.title,
+      poster_path: item.posterPath
+        ? `https://image.tmdb.org/t/p/w500${item.posterPath}`
+        : null
+    }));
 
-  setMovies(formatted);
-};
+    setTrending(formatted);
+  };
 
-  // Handles searches coming from SearchBar component
+  // =========================
+  // SEARCH
+  // =========================
   const handleSearch = async (searchQuery) => {
 
-    // If search box is empty, reload trending movies
     if (!searchQuery.trim()) {
-      loadTrending();
+      loadMovies();
       return;
     }
 
-    try {
-
-      // Search TMDB
-      const data = await searchMovies(searchQuery);
-
-      // Update movies grid
-      setMovies(data.results || []);
-
-    } catch (error) {
-
-      console.error("Search failed:", error);
-
-    }
+    const data = await searchMovies(searchQuery);
+    setMovies(data.results || []);
   };
 
   return (
     <div className="bg-black min-h-screen text-white">
 
-      {/* HERO SECTION */}
-      {hero && (
-        <div
-          className="h-[70vh] flex items-end p-10 relative"
-          style={{
-            backgroundImage: `url(https://image.tmdb.org/t/p/original${hero.backdrop_path})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        >
-          <div className="absolute inset-0 bg-black/60"></div>
+      {/* HERO + SEARCH */}
+      <SearchBar onSearch={handleSearch} />
 
-          <div className="relative z-10 max-w-xl">
-            <h1 className="text-4xl font-bold">{hero.title}</h1>
-            <p className="text-sm text-gray-300 mt-2">
-              {hero.overview?.slice(0, 150)}...
+      {/* =========================
+          🔥 TRENDING SLIDER
+      ========================== */}
+      <h2 className="text-xl font-bold px-4 mt-6">
+        🔥 Trending Searches
+      </h2>
+
+      <div className="flex gap-4 overflow-x-auto px-4 py-3 scrollbar-hide">
+
+        {trending.map((movie) => (
+          <div key={movie.id} className="min-w-[120px]">
+
+            <img
+              src={movie.poster_path}
+              className="w-[120px] h-[180px] object-cover rounded"
+            />
+
+            <p className="text-xs mt-1">
+              {movie.title}
             </p>
 
-            <button className="mt-4 bg-red-600 px-4 py-2 rounded">
-              Watch Now
-            </button>
           </div>
-        </div>
-      )}
+        ))}
 
-        {/* SEARCH BAR COMPONENT */}
-        <div className="p-4">
-          <SearchBar onSearch={handleSearch} />
-        </div>
+      </div>
 
+      {/* =========================
+          🎬 NORMAL MOVIES GRID
+      ========================== */}
+      <h2 className="text-xl font-bold px-4 mt-6">
+        🎬 Movies
+      </h2>
 
-      {/* MOVIES GRID */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4">
-        {movies?.map((movie) => (
+
+        {movies.map((movie) => (
           <MovieCard key={movie.id} movie={movie} />
         ))}
+
       </div>
+
     </div>
   );
 }
